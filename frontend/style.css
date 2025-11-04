@@ -319,16 +319,67 @@ body {
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .app-title {
-        font-size: 2rem;
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+    
+    .memo-input-container {
+        margin-bottom: 30px;
+    }
+    
+    .input-wrapper {
+        padding: 20px;
+    }
+    
+    #memoInput {
+        font-size: 1rem;
+        padding: 12px;
+    }
+    
+    .btn {
+        padding: 12px 25px;
+        font-size: 0.95rem;
+        min-height: 44px;
     }
     
     .memo-container {
         grid-template-columns: 1fr;
         gap: 20px;
+        padding: 10px;
     }
     
     .memo-cloud {
-        min-height: 150px;
+        min-height: 120px;
+        padding: 35px 30px 25px 30px;
+    }
+    
+    .memo-content {
+        font-size: 0.95rem;
+    }
+    
+    .memo-btn {
+        padding: 8px 14px;
+        font-size: 0.7rem;
+        min-height: 36px;
+    }
+}
+
+/* 작은 모바일 화면 (480px 이하) */
+@media (max-width: 480px) {
+    .app-title {
+        font-size: 1.5rem;
+    }
+    
+    .sky-background {
+        padding: 15px;
+    }
+    
+    .input-wrapper {
+        padding: 15px;
+    }
+    
+    .memo-cloud {
+        padding: 30px 25px 20px 25px;
     }
 }
 

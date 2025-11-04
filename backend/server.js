@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -9,26 +10,22 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// 정적 파일 제공 (프론트엔드)
+app.use(express.static(path.join(__dirname, '../frontend')));
+
 // 데이터베이스 연결
 const db = require('./database');
 
-// 라우트
+// API 라우트
 const memoRoutes = require('./routes/memos');
 app.use('/api/memos', memoRoutes);
 
-// 기본 라우트
-app.get('/', (req, res) => {
-    res.json({ 
-        message: '메모 공유 앱 API 서버',
-        version: '1.0.0',
-        endpoints: {
-            getAllMemos: 'GET /api/memos',
-            getMemo: 'GET /api/memos/:id',
-            createMemo: 'POST /api/memos',
-            updateMemo: 'PUT /api/memos/:id',
-            deleteMemo: 'DELETE /api/memos/:id'
-        }
-    });
+// 프론트엔드 라우트 (모든 경로를 index.html로)
+app.get('*', (req, res) => {
+    // API 경로가 아닌 경우에만 index.html 제공
+    if (!req.path.startsWith('/api')) {
+        res.sendFile(path.join(__dirname, '../frontend/index.html'));
+    }
 });
 
 // 에러 핸들링

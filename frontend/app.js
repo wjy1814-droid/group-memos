@@ -1,5 +1,5 @@
 // API 엔드포인트 설정
-const API_URL = 'http://localhost:3000/api/memos';
+const API_URL = '/api/memos';
 
 // 전역 변수
 let editingMemoId = null;
