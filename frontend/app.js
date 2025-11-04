@@ -1,5 +1,8 @@
 // API 엔드포인트 설정
-const API_URL = '/api/memos';
+// 배포 환경에서는 상대 경로, 로컬에서는 절대 경로 사용
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3000/api/memos'
+    : '/api/memos';
 
 // 전역 변수
 let editingMemoId = null;
