@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>☁️ 구름 메모장 - 그룹 메모 공유</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 인증 화면 -->
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-container">
+            <h1>☁️ 구름 메모장</h1>
+            <div class="auth-tabs">
+                <button id="loginTab" class="auth-tab active">로그인</button>
+                <button id="registerTab" class="auth-tab">회원가입</button>
+            </div>
+            
+            <!-- 로그인 폼 -->
+            <form id="loginForm" class="auth-form">
+                <input type="email" id="loginEmail" placeholder="이메일" required>
+                <input type="password" id="loginPassword" placeholder="비밀번호" required>
+                <button type="submit" class="auth-btn">로그인</button>
+            </form>
+            
+            <!-- 회원가입 폼 -->
+            <form id="registerForm" class="auth-form" style="display: none;">
+                <input type="text" id="registerUsername" placeholder="사용자명" required>
+                <input type="email" id="registerEmail" placeholder="이메일" required>
+                <input type="password" id="registerPassword" placeholder="비밀번호 (최소 6자)" required>
+                <button type="submit" class="auth-btn">회원가입</button>
+            </form>
+            
+            <p class="auth-message" id="authMessage"></p>
+        </div>
+    </div>
+
+    <!-- 메인 앱 화면 -->
+    <div id="appScreen" class="sky-background" style="display: none;">
+        <!-- 상단 네비게이션 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <h1 class="app-title">☁️ 구름 메모장</h1>
+            </div>
+            <div class="navbar-right">
+                <span id="usernameDisplay"></span>
+                <button id="myGroupsBtn" class="nav-btn">내 그룹</button>
+                <button id="logoutBtn" class="nav-btn">로그아웃</button>
+            </div>
+        </nav>
+
+        <!-- 그룹 목록 화면 -->
+        <div id="groupsScreen" style="display: none;">
+            <div class="groups-container">
+                <h2>내 그룹</h2>
+                <button id="createGroupBtn" class="btn btn-create">새 그룹 만들기</button>
+                <div id="groupsList" class="groups-list"></div>
+            </div>
+        </div>
+
+        <!-- 그룹 상세/메모 화면 -->
+        <div id="memosScreen" style="display: none;">
+            <div class="memos-header">
+                <button id="backToGroupsBtn" class="btn btn-back">← 그룹 목록</button>
+                <h2 id="currentGroupName"></h2>
+                <div class="group-actions">
+                    <button id="inviteLinkBtn" class="btn btn-invite">초대 링크</button>
+                    <button id="groupMembersBtn" class="btn btn-members">멤버 보기</button>
+                    <button id="groupSettingsBtn" class="btn btn-settings">그룹 설정</button>
+                </div>
+            </div>
+
+            <!-- 메모 작성 영역 -->
+            <div class="memo-input-container">
+                <div class="input-wrapper">
+                    <textarea 
+                        id="memoInput" 
+                        placeholder="메모를 작성하세요..."
+                        rows="3"
+                    ></textarea>
+                    <button id="addMemoBtn" class="btn btn-add">메모 추가</button>
+                </div>
+            </div>
+
+            <!-- 메모 표시 영역 (구름 형태) -->
+            <div class="memo-container" id="memoContainer">
+                <!-- 메모들이 여기에 동적으로 추가됩니다 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 그룹 생성 모달 -->
+    <div id="createGroupModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>새 그룹 만들기</h2>
+            <form id="createGroupForm">
+                <input type="text" id="groupName" placeholder="그룹 이름" required>
+                <textarea id="groupDescription" placeholder="그룹 설명 (선택사항)" rows="3"></textarea>
+                <button type="submit" class="btn btn-create">만들기</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 초대 링크 모달 -->
+    <div id="inviteLinkModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>초대 링크 관리</h2>
+            <button id="createInviteLinkBtn" class="btn btn-create">새 초대 링크 생성</button>
+            <div id="inviteLinksList"></div>
+        </div>
+    </div>
+
+    <!-- 초대 링크 생성 모달 -->
+    <div id="createInviteLinkModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>초대 링크 생성</h2>
+            <form id="createInviteLinkForm">
+                <label>
+                    <input type="checkbox" id="setExpiration">
+                    만료 시간 설정
+                </label>
+                <input type="number" id="expirationHours" placeholder="시간 (예: 24)" min="1" disabled>
+                
+                <label>
+                    <input type="checkbox" id="setMaxUses">
+                    최대 사용 횟수 설정
+                </label>
+                <input type="number" id="maxUses" placeholder="횟수 (예: 10)" min="1" disabled>
+                
+                <button type="submit" class="btn btn-create">생성하기</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 그룹 멤버 모달 -->
+    <div id="groupMembersModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>그룹 멤버</h2>
+            <div id="membersList"></div>
+        </div>
+    </div>
+
+    <!-- 초대 페이지 (초대 링크로 접속시) -->
+    <div id="inviteScreen" class="invite-screen" style="display: none;">
+        <div class="invite-container">
+            <h1>☁️ 그룹 초대</h1>
+            <div id="inviteInfo"></div>
+            <button id="acceptInviteBtn" class="btn btn-accept">그룹 가입하기</button>
+            <p class="invite-message" id="inviteMessage"></p>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="groups.js"></script>
+    <script src="memos.js"></script>
+    <script src="invites.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
