@@ -111,6 +111,19 @@ const initializeDatabase = async () => {
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
+        
+        // 기존 테이블에 컬럼이 없으면 추가 (마이그레이션)
+        try {
+            await pool.query(`
+                ALTER TABLE memos 
+                ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                ADD COLUMN IF NOT EXISTS group_id INTEGER REFERENCES groups(id) ON DELETE CASCADE;
+            `);
+            console.log('✅ 메모 테이블 마이그레이션 완료');
+        } catch (migrationError) {
+            console.log('ℹ️ 메모 테이블은 이미 최신 버전입니다.');
+        }
+        
         console.log('✅ 메모 테이블이 준비되었습니다.');
     } catch (error) {
         console.error('❌ 데이터베이스 초기화 오류:', error);
