@@ -1,4 +1,5 @@
 // API 엔드포인트 설정
+// 로컬 개발 환경에서는 포트 3001, 프로덕션에서는 상대 경로 사용
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:3001/api'
     : '/api';

@@ -1,0 +1,33 @@
+services:
+  # PostgreSQL 데이터베이스
+  - type: pserv
+    name: group-memos-db
+    env: docker
+    plan: free
+    region: oregon
+    databases:
+      - name: group_memos
+        databaseName: group_memos
+        user: group_memos_user
+
+  # 백엔드 + 프론트엔드 서비스
+  - type: web
+    name: group-memos
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node server.js
+    envVars:
+      - key: NODE_VERSION
+        value: 18.17.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: group-memos-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 10000
+    healthCheckPath: /
+

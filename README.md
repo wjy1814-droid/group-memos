@@ -26,7 +26,50 @@
 - Vanilla JavaScript
 - Fetch API
 
-## 설치 및 실행
+## 🚀 Render에 배포하기
+
+### 1. Render 계정 생성
+[Render.com](https://render.com)에서 계정을 만듭니다 (GitHub 계정으로 로그인 가능)
+
+### 2. GitHub 저장소 연결
+1. Render 대시보드에서 "New +" 클릭
+2. "Web Service" 선택
+3. GitHub 저장소 연결: `wjy1814-droid/group-memos`
+4. 다음 설정 사용:
+   - **Name**: group-memos
+   - **Region**: Oregon (US West)
+   - **Branch**: main
+   - **Root Directory**: (비워두기)
+   - **Environment**: Node
+   - **Build Command**: `cd backend && npm install`
+   - **Start Command**: `cd backend && node server.js`
+   - **Plan**: Free
+
+### 3. 환경 변수 설정
+Render 대시보드의 "Environment" 탭에서 다음 환경 변수를 추가:
+
+- `DATABASE_URL`: Render PostgreSQL 데이터베이스 URL (자동 설정)
+- `JWT_SECRET`: 랜덤한 문자열 (예: `your-super-secret-jwt-key-change-this`)
+- `NODE_ENV`: `production`
+
+### 4. PostgreSQL 데이터베이스 생성
+1. Render 대시보드에서 "New +" → "PostgreSQL" 선택
+2. 다음 설정 사용:
+   - **Name**: group-memos-db
+   - **Database**: group_memos
+   - **User**: group_memos_user
+   - **Region**: Oregon (US West)
+   - **Plan**: Free
+3. 생성 후 Internal Database URL을 복사
+4. Web Service의 환경 변수 `DATABASE_URL`에 붙여넣기
+
+### 5. 배포
+"Manual Deploy" → "Deploy latest commit" 클릭하여 배포 시작
+
+배포가 완료되면 Render가 제공하는 URL로 접속할 수 있습니다!
+예: `https://group-memos.onrender.com`
+
+## 로컬 설치 및 실행
 
 ### 1. 저장소 클론
 
@@ -38,14 +81,13 @@ cd group-memos
 ### 2. 의존성 설치
 
 ```bash
-# 백엔드 의존성 설치
 cd backend
 npm install
 ```
 
 ### 3. 환경 변수 설정
 
-`backend/env.example` 파일을 참고하여 `backend/.env` 파일을 생성하고 데이터베이스 정보를 입력하세요.
+`backend/.env` 파일을 생성하고 다음 내용 입력:
 
 ```env
 DB_HOST=localhost
@@ -55,7 +97,7 @@ DB_USER=postgres
 DB_PASSWORD=your_password
 
 JWT_SECRET=your_jwt_secret_key
-PORT=3000
+PORT=3001
 ```
 
 ### 4. PostgreSQL 데이터베이스 생성
@@ -78,7 +120,7 @@ npm start
 npm run dev
 ```
 
-서버가 `http://localhost:3000`에서 실행됩니다.
+서버가 `http://localhost:3001`에서 실행됩니다.
 
 ## API 엔드포인트
 
@@ -163,4 +205,3 @@ PR과 이슈는 언제든지 환영합니다!
 ## 문의
 
 문제가 있거나 질문이 있으시면 이슈를 등록해주세요.
-

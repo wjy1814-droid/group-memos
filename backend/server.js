@@ -6,6 +6,9 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Render 환경 감지
+const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER;
+
 // 미들웨어
 app.use(cors());
 app.use(express.json());
