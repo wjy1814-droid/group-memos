@@ -24,11 +24,13 @@ const authRoutes = require('./routes/auth');
 const groupRoutes = require('./routes/groups');
 const memoRoutes = require('./routes/memos');
 const inviteRoutes = require('./routes/invites');
+const userRoutes = require('./routes/users');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/memos', memoRoutes);
 app.use('/api/invites', inviteRoutes);
+app.use('/api/users', userRoutes);
 
 // 프론트엔드 라우트 (모든 경로를 index.html로)
 app.get('*', (req, res) => {

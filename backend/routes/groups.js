@@ -215,5 +215,67 @@ router.post('/:groupId/leave', async (req, res) => {
     }
 });
 
+// 사용자를 그룹에 직접 초대
+router.post('/:groupId/invite-user', async (req, res) => {
+    try {
+        const { groupId } = req.params;
+        const { userId } = req.body;
+        
+        if (!userId) {
+            return res.status(400).json({ error: '초대할 사용자를 선택해주세요.' });
+        }
+        
+        // 권한 확인 (owner나 admin만 가능)
+        const memberCheck = await pool.query(
+            'SELECT role FROM group_members WHERE group_id = $1 AND user_id = $2',
+            [groupId, req.userId]
+        );
+        
+        if (memberCheck.rows.length === 0) {
+            return res.status(403).json({ error: '이 그룹의 멤버가 아닙니다.' });
+        }
+        
+        const role = memberCheck.rows[0].role;
+        if (role !== 'owner' && role !== 'admin') {
+            return res.status(403).json({ error: '사용자를 초대할 권한이 없습니다.' });
+        }
+        
+        // 이미 그룹 멤버인지 확인
+        const existingMember = await pool.query(
+            'SELECT * FROM group_members WHERE group_id = $1 AND user_id = $2',
+            [groupId, userId]
+        );
+        
+        if (existingMember.rows.length > 0) {
+            return res.status(400).json({ error: '이미 이 그룹의 멤버입니다.' });
+        }
+        
+        // 그룹에 추가
+        await pool.query(
+            'INSERT INTO group_members (group_id, user_id, role) VALUES ($1, $2, $3)',
+            [groupId, userId, 'member']
+        );
+        
+        // 사용자 정보 조회
+        const userInfo = await pool.query(
+            'SELECT id, username, email FROM users WHERE id = $1',
+            [userId]
+        );
+        
+        res.json({ 
+            message: '사용자를 그룹에 초대했습니다.',
+            user: userInfo.rows[0]
+        });
+    } catch (error) {
+        console.error('사용자 초대 오류:', error);
+        
+        if (error.code === '23505') {
+            return res.status(400).json({ error: '이미 이 그룹의 멤버입니다.' });
+        }
+        
+        res.status(500).json({ error: '사용자 초대에 실패했습니다.' });
+    }
+});
+
 module.exports = router;
 

@@ -64,6 +64,7 @@
                 <button id="backToGroupsBtn" class="btn btn-back">← 그룹 목록</button>
                 <h2 id="currentGroupName"></h2>
                 <div class="group-actions">
+                    <button id="findFriendBtn" class="btn btn-find">친구 찾기</button>
                     <button id="inviteLinkBtn" class="btn btn-invite">초대 링크</button>
                     <button id="groupMembersBtn" class="btn btn-members">멤버 보기</button>
                     <button id="groupSettingsBtn" class="btn btn-settings">그룹 설정</button>
@@ -144,6 +145,20 @@
         </div>
     </div>
 
+    <!-- 친구 찾기 모달 -->
+    <div id="findFriendModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>친구 찾기</h2>
+            <p style="color: #666; margin-bottom: 20px;">이메일 또는 사용자명으로 검색하세요</p>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="text" id="friendSearchInput" placeholder="이메일 또는 사용자명 입력..." style="flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem;">
+                <button id="searchFriendBtn" class="btn btn-create">검색</button>
+            </div>
+            <div id="friendSearchResults"></div>
+        </div>
+    </div>
+
     <!-- 초대 페이지 (초대 링크로 접속시) -->
     <div id="inviteScreen" class="invite-screen" style="display: none;">
         <div class="invite-container">
@@ -158,6 +173,7 @@
     <script src="groups.js"></script>
     <script src="memos.js"></script>
     <script src="invites.js"></script>
+    <script src="friends.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

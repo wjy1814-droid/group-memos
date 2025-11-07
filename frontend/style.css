@@ -410,6 +410,11 @@ body {
     color: white;
 }
 
+.btn-find {
+    background: #27ae60;
+    color: white;
+}
+
 .btn-accept {
     background: #27ae60;
     color: white;
@@ -630,6 +635,59 @@ body {
 
 .member-role.admin {
     background: #f39c12;
+}
+
+/* ==================== 친구 검색 결과 ==================== */
+.friend-search-result {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.friend-info {
+    flex: 1;
+}
+
+.friend-name {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.friend-email {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.btn-invite-friend {
+    background: #27ae60;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: transform 0.2s;
+}
+
+.btn-invite-friend:hover {
+    transform: scale(1.05);
+}
+
+.btn-invite-friend:disabled {
+    background: #95a5a6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.search-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #888;
 }
 
 /* ==================== 빈 상태 ==================== */
