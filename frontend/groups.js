@@ -223,8 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 초기 화면: 그룹 목록 표시
-    Groups.displayGroups();
+    // 초기 화면: 첫 번째 그룹의 메모 화면 자동 표시
+    loadFirstGroup();
 });
 
 // HTML 이스케이프 함수
@@ -233,5 +233,26 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// 첫 번째 그룹 자동 로드
+async function loadFirstGroup() {
+    try {
+        const groups = await Groups.getMyGroups();
+        
+        if (groups.length === 0) {
+            // 그룹이 없으면 그룹 목록 화면 표시
+            Groups.backToGroups();
+            return;
+        }
+        
+        // 첫 번째 그룹을 자동으로 열기
+        const firstGroup = groups[0];
+        Groups.openGroup(firstGroup.id, firstGroup.name);
+    } catch (error) {
+        console.error('그룹 로드 오류:', error);
+        // 에러 발생 시 그룹 목록 화면으로
+        Groups.backToGroups();
+    }
 }
 

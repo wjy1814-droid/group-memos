@@ -11,11 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // 인증된 사용자: 그룹 화면 표시
-    const groupsScreen = document.getElementById('groupsScreen');
-    if (groupsScreen) {
-        groupsScreen.style.display = 'block';
-    }
+    // 인증된 사용자: 메모 화면은 groups.js에서 자동으로 표시됨
 
     // 기타 전역 이벤트 리스너 설정
     setupGlobalEventListeners();
