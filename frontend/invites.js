@@ -246,6 +246,22 @@ async function handleInvitePage(inviteCode) {
     const acceptInviteBtn = document.getElementById('acceptInviteBtn');
     const inviteMessage = document.getElementById('inviteMessage');
 
+    // 로그인되어 있지 않으면 초대 코드를 저장하고 로그인 화면으로
+    if (!Auth.isAuthenticated()) {
+        localStorage.setItem('pendingInviteCode', inviteCode);
+        authScreen.style.display = 'flex';
+        appScreen.style.display = 'none';
+        inviteScreen.style.display = 'none';
+        
+        // 로그인/회원가입 폼에 안내 메시지 추가
+        const authMessage = document.getElementById('authMessage');
+        if (authMessage) {
+            authMessage.textContent = '그룹에 가입하려면 로그인이 필요합니다.';
+            authMessage.style.color = '#667eea';
+        }
+        return;
+    }
+
     authScreen.style.display = 'none';
     appScreen.style.display = 'none';
     inviteScreen.style.display = 'flex';
@@ -261,16 +277,9 @@ async function handleInvitePage(inviteCode) {
         `;
 
         acceptInviteBtn.addEventListener('click', async () => {
-            if (!Auth.isAuthenticated()) {
-                inviteMessage.textContent = '로그인이 필요합니다.';
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 1500);
-                return;
-            }
-
             try {
                 await Invites.joinGroupByInvite(inviteCode);
+                localStorage.removeItem('pendingInviteCode');
                 alert('그룹에 가입했습니다!');
                 window.location.href = '/';
             } catch (error) {

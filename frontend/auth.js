@@ -146,7 +146,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             await Auth.login(email, password);
-            window.location.reload();
+            
+            // 초대 코드가 저장되어 있으면 초대 페이지로 리다이렉트
+            const pendingInviteCode = localStorage.getItem('pendingInviteCode');
+            if (pendingInviteCode) {
+                window.location.href = `/invite/${pendingInviteCode}`;
+            } else {
+                window.location.reload();
+            }
         } catch (error) {
             authMessage.textContent = error.message;
         }
@@ -163,7 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             await Auth.register(username, email, password);
-            window.location.reload();
+            
+            // 초대 코드가 저장되어 있으면 초대 페이지로 리다이렉트
+            const pendingInviteCode = localStorage.getItem('pendingInviteCode');
+            if (pendingInviteCode) {
+                window.location.href = `/invite/${pendingInviteCode}`;
+            } else {
+                window.location.reload();
+            }
         } catch (error) {
             authMessage.textContent = error.message;
         }
