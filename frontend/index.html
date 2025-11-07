@@ -79,6 +79,13 @@
                         placeholder="메모를 작성하세요..."
                         rows="3"
                     ></textarea>
+                    <div class="reminder-controls">
+                        <label class="reminder-label">
+                            <input type="checkbox" id="setReminder">
+                            🔔 알림 설정
+                        </label>
+                        <input type="datetime-local" id="reminderTime" disabled>
+                    </div>
                     <button id="addMemoBtn" class="btn btn-add">메모 추가</button>
                 </div>
             </div>
@@ -171,6 +178,7 @@
 
     <script src="auth.js"></script>
     <script src="groups.js"></script>
+    <script src="reminders.js"></script>
     <script src="memos.js"></script>
     <script src="invites.js"></script>
     <script src="friends.js"></script>

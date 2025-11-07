@@ -15,11 +15,11 @@ const Memos = {
     },
 
     // 메모 생성
-    async createMemo(content, groupId) {
+    async createMemo(content, groupId, reminderTime = null) {
         const response = await fetch(`${API_BASE_URL}/memos`, {
             method: 'POST',
             headers: Auth.getAuthHeaders(),
-            body: JSON.stringify({ content, groupId })
+            body: JSON.stringify({ content, groupId, reminderTime })
         });
 
         if (!response.ok) {
@@ -82,6 +82,11 @@ const Memos = {
                 const memoElement = this.createMemoElement(memo);
                 memoContainer.appendChild(memoElement);
             });
+
+            // 알림 스케줄링
+            if (typeof Reminders !== 'undefined') {
+                Reminders.scheduleAllReminders(memos);
+            }
         } catch (error) {
             memoContainer.innerHTML = `<div class="empty-state">오류: ${error.message}</div>`;
         }
@@ -97,11 +102,21 @@ const Memos = {
         const isOwner = currentUser && memo.user_id === currentUser.id;
 
         const formattedDate = this.formatDate(memo.created_at);
+        
+        // 알림 시간 포맷팅
+        let reminderHtml = '';
+        if (memo.reminder_time) {
+            const reminderInfo = Reminders.formatReminderTime(memo.reminder_time);
+            if (reminderInfo) {
+                reminderHtml = `<div class="memo-reminder ${reminderInfo.expired ? 'expired' : ''}">${reminderInfo.text}</div>`;
+            }
+        }
 
         memoDiv.innerHTML = `
             <div class="memo-author">작성자: ${escapeHtml(memo.author_name || '알 수 없음')}</div>
             <div class="memo-content">${escapeHtml(memo.content).replace(/\n/g, '<br>')}</div>
             <div class="memo-date">${formattedDate}</div>
+            ${reminderHtml}
             ${isOwner ? `
                 <div class="memo-actions">
                     <button class="memo-btn btn-edit" onclick="Memos.startEdit(${memo.id})">수정</button>
@@ -117,6 +132,8 @@ const Memos = {
     async handleAddMemo() {
         const memoInput = document.getElementById('memoInput');
         const content = memoInput.value.trim();
+        const setReminder = document.getElementById('setReminder');
+        const reminderTime = document.getElementById('reminderTime');
 
         if (!content) {
             alert('메모 내용을 입력해주세요!');
@@ -128,9 +145,18 @@ const Memos = {
             return;
         }
 
+        // 알림 시간 가져오기
+        let reminderTimeValue = null;
+        if (setReminder && setReminder.checked && reminderTime.value) {
+            reminderTimeValue = new Date(reminderTime.value).toISOString();
+        }
+
         try {
-            await this.createMemo(content, Groups.currentGroupId);
+            await this.createMemo(content, Groups.currentGroupId, reminderTimeValue);
             memoInput.value = '';
+            setReminder.checked = false;
+            reminderTime.disabled = true;
+            reminderTime.value = '';
             this.loadMemos(Groups.currentGroupId);
         } catch (error) {
             alert(error.message);

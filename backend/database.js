@@ -117,7 +117,8 @@ const initializeDatabase = async () => {
             await pool.query(`
                 ALTER TABLE memos 
                 ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
-                ADD COLUMN IF NOT EXISTS group_id INTEGER REFERENCES groups(id) ON DELETE CASCADE;
+                ADD COLUMN IF NOT EXISTS group_id INTEGER REFERENCES groups(id) ON DELETE CASCADE,
+                ADD COLUMN IF NOT EXISTS reminder_time TIMESTAMP;
             `);
             console.log('✅ 메모 테이블 마이그레이션 완료');
         } catch (migrationError) {

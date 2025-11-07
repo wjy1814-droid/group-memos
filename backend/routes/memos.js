@@ -41,7 +41,7 @@ router.get('/group/:groupId', async (req, res) => {
 // 메모 생성
 router.post('/', async (req, res) => {
     try {
-        const { content, groupId } = req.body;
+        const { content, groupId, reminderTime } = req.body;
         
         if (!content || content.trim() === '') {
             return res.status(400).json({ error: '메모 내용을 입력해주세요.' });
@@ -62,8 +62,8 @@ router.post('/', async (req, res) => {
         }
         
         const result = await pool.query(
-            'INSERT INTO memos (content, user_id, group_id) VALUES ($1, $2, $3) RETURNING *',
-            [content.trim(), req.userId, groupId]
+            'INSERT INTO memos (content, user_id, group_id, reminder_time) VALUES ($1, $2, $3, $4) RETURNING *',
+            [content.trim(), req.userId, groupId, reminderTime || null]
         );
         
         // 작성자 정보 포함
@@ -90,7 +90,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { content } = req.body;
+        const { content, reminderTime } = req.body;
         
         if (!content || content.trim() === '') {
             return res.status(400).json({ error: '메모 내용을 입력해주세요.' });
@@ -113,8 +113,8 @@ router.put('/:id', async (req, res) => {
         }
         
         const result = await pool.query(
-            'UPDATE memos SET content = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *',
-            [content.trim(), id]
+            'UPDATE memos SET content = $1, reminder_time = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3 RETURNING *',
+            [content.trim(), reminderTime || null, id]
         );
         
         // 작성자 정보 포함
